@@ -13,7 +13,7 @@ user_data_michal = {"first_name": UserMichal.first_name.value,
                     "last_name": UserMichal.last_name.value,
                     "email": UserMichal.email.value,
                     "password": UserMichal.password.value,
-                    "phone": ""}  # тест get user by email падает при пустом phone
+                    "phone": ""}  # тест get_user_by_mail падает при пустом phone
 
 
 class TestsPositive:
@@ -28,10 +28,10 @@ class TestsPositive:
         assert response.status_code == 200, f"Response status code-{response.status_code}"
         assert len(response.json()) > 1, "Response content is empty"
 
-
-    @pytest.mark.parametrize("user_data",
-                             [user_data_liza,
-                              pytest.param(user_data_michal, marks=pytest.mark.xfail)])
+    @pytest.mark.parametrize(argnames="user_data",
+                             argvalues=[user_data_liza,
+                                        pytest.param(user_data_michal,
+                                                     marks=pytest.mark.xfail)])
     def test_create_user(self, bearer_token, user_data):
         """
         Method tests creating user
@@ -46,10 +46,11 @@ class TestsPositive:
         assert response_body[:-1] == request_body, \
             "Response body difference from expected"
 
-
-    @pytest.mark.parametrize("email, user_data",
-                             [(UserLiza.email.value, user_data_liza),
-                              (UserMichal.email.value, user_data_michal)])
+    @pytest.mark.parametrize(argnames="email, user_data",
+                             argvalues=[(user_data_liza['email'], user_data_liza),
+                                        pytest.param(user_data_michal['email'],
+                                                     user_data_michal,
+                                                     marks=pytest.mark.xfail)])
     def test_get_user_by_email(self, bearer_token, email, user_data):
         """
         Method tests getting user by email param

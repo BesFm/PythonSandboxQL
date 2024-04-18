@@ -1,5 +1,4 @@
-import os
-
+import allure
 import requests as r
 from conftest import bearer_token
 from enums.enum_test_data import Handlers
@@ -16,8 +15,10 @@ user_liza = {"first_name": UserLiza.first_name.value,
              "phone": UserLiza.phone.value}
 
 
+@allure.suite("Negative Tests")
 class TestsNegative:
 
+    @allure.title("Test create user without 'phone' field")
     def test_create_user_wo_phone_field(self, bearer_token):
         """
         Method tests creating new user without field 'phone'
@@ -25,7 +26,7 @@ class TestsNegative:
         Expected result: Status Code 422,
                          Error message contains info about missing field
         """
-        response = r.post(url=os.getenv("create_user"),
+        response = r.post(url=f"{Handlers.base_url.value}{Handlers.create_user.value}",
                           headers={"Authorization": "Bearer " + bearer_token},
                           json=user_michal)
         assert response.status_code == 422, f"Response status code-{response.status_code}"
@@ -33,6 +34,7 @@ class TestsNegative:
             "Error message difference from expected"
 
 
+    @allure.title("Test create user with invalid 'email' field")
     def test_create_user_with_invalid_email(self, bearer_token):
         """
         Method tests creating new user with invalid 'email' field
@@ -49,6 +51,7 @@ class TestsNegative:
             "Error message difference from expected"
 
 
+    @allure.title("Test get user by non-existent email")
     def test_get_user_by_non_existent_email(self, bearer_token):
         """
         Method tests getting user by non-existent email
@@ -65,6 +68,7 @@ class TestsNegative:
             "Error message difference from expected"
 
 
+    @allure.title("Test get user by invalid query")
     def test_get_user_by_invalid_query(self, bearer_token):
         """
 
@@ -83,6 +87,7 @@ class TestsNegative:
             "Error message difference from expected"
 
 
+    @allure.title("Test delete user")
     def test_delete_user_for_tests(self, bearer_token):
         """
         Method tests delete user by email (not allowed method)

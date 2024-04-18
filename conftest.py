@@ -1,10 +1,14 @@
+import allure
 import pytest
-import requests
+import requests as r
+from enums.enum_test_data import Handlers
 
 
 @pytest.fixture(scope="function")
 def bearer_token():
-    response = requests.post("http://194.79.44.70:9090/api/v1/auth/login",
-                             data={"username": "p.bodak@quality-lab.ru",
-                                   "password": "gNiExb<S3!9x"})
+    with allure.step("Get Bearer Token"):
+        response = r.post(
+            url=f"{Handlers.base_url.value}{Handlers.get_bearer_token.value}",
+            data={"username": "p.bodak@quality-lab.ru",
+                  "password": "gNiExb<S3!9x"})
     return response.json()['access_token']

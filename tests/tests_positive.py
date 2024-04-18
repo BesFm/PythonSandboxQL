@@ -1,3 +1,4 @@
+import allure
 import pytest
 import requests as r
 from enums.enum_test_data import Handlers
@@ -16,8 +17,10 @@ user_data_michal = {"first_name": UserMichal.first_name.value,
                     "phone": ""}  # тест get_user_by_mail падает при пустом phone
 
 
+@allure.suite("Positive Tests")
 class TestsPositive:
 
+    @allure.title("Get all users")
     def test_get_all_users(self, bearer_token):
         """
         Method tests getting all users
@@ -28,6 +31,8 @@ class TestsPositive:
         assert response.status_code == 200, f"Response status code-{response.status_code}"
         assert len(response.json()) > 1, "Response content is empty"
 
+
+    @allure.title("Create user")
     @pytest.mark.parametrize(argnames="user_data",
                              argvalues=[user_data_liza,
                                         pytest.param(user_data_michal,
@@ -46,6 +51,8 @@ class TestsPositive:
         assert response_body[:-1] == request_body, \
             "Response body difference from expected"
 
+
+    @allure.title("Get user by email")
     @pytest.mark.parametrize(argnames="email, user_data",
                              argvalues=[(user_data_liza['email'], user_data_liza),
                                         pytest.param(user_data_michal['email'],
